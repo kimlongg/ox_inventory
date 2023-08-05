@@ -24,4 +24,24 @@ export const validateMove = createAsyncThunk(
       return rejectWithValue(false);
     }
   }
+), validateDelete = createAsyncThunk(
+  'inventory/validateDelete',
+  async (
+    data: {
+      fromSlot: number;
+      fromType: string;
+      count: number;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const response = await fetchNui<boolean | number>('deleteItems', data);
+
+      if (response === false) return rejectWithValue(response);
+
+      if (typeof response === 'number') dispatch(setContainerWeight(response));
+    } catch (error) {
+      return rejectWithValue(false);
+    }
+  }
 );

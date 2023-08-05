@@ -7,6 +7,7 @@ import {
   stackSlotsReducer,
   swapSlotsReducer,
   moveSlotsReducer,
+  removeSlotsReducer,
 } from '../reducers';
 
 const initialState: State = {
@@ -39,6 +40,7 @@ export const inventorySlice = createSlice({
     swapSlots: swapSlotsReducer,
     setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
+    removeSlots: removeSlotsReducer,
     refreshSlots: refreshSlotsReducer,
     setContextMenu: (
       state,
@@ -46,8 +48,8 @@ export const inventorySlice = createSlice({
     ) => {
       state.contextMenu = action.payload;
     },
-    setAdditionalMetadata: (state, action: PayloadAction<Array<{metadata: string, value: string}>>) => {
-      state.additionalMetadata = [ ...state.additionalMetadata, ...action.payload ];
+    setAdditionalMetadata: (state, action: PayloadAction<Array<{ metadata: string, value: string }>>) => {
+      state.additionalMetadata = [...state.additionalMetadata, ...action.payload];
     },
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
@@ -94,6 +96,7 @@ export const {
   swapSlots,
   moveSlots,
   stackSlots,
+  removeSlots,
   refreshSlots,
   setContainerWeight,
 } = inventorySlice.actions;

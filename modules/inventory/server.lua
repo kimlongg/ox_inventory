@@ -1865,6 +1865,36 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 	end
 end)
 
+lib.callback.register('ox_inventory:deleteItems', function(source, data)
+	if data.count < 1 then return end
+
+	local inventory = Inventory(source)
+
+	if not inventory then return end
+
+	if inventory.player then
+		local data = item and (slot and inventory.items[slot])
+		local item = Items(data.name)
+
+		if not data then return end
+
+		slot = data.slot
+		local durability = data.metadata.durability --[[@as number|boolean|nil]]
+		local label = data.metadata.label or item.label
+
+		if item and data and data.count > 0 and data.name == item.name then
+			data = inventory.items[slot]
+
+			if not data then return end
+
+			print("Xoa item " .. data.name.. " tu trang bi " ..inventory.id)
+			Inventory.RemoveItem(inventory.id, data.name, 1, nil, data.slot)
+
+			return true
+		end
+	end
+end)
+
 function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 

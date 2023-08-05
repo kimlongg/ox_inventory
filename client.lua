@@ -1801,6 +1801,24 @@ RegisterNUICallback('swapItems', function(data, cb)
 	end
 end)
 
+RegisterNUICallback('deleteItems', function(data, cb)
+	print("Client xoa item " ..data)
+    if not invOpen or invBusy then return end
+
+	-- if currentInstance then
+	-- 	data.instance = currentInstance
+	-- end
+
+	local response, data, message = lib.callback.await('ox_inventory:deleteItems', false, data)
+	updateInventory({
+		{
+			item = data[2],
+			inventory = cache.serverId
+		}
+	}, data[4])
+
+end)
+
 RegisterNUICallback('buyItem', function(data, cb)
 	---@type boolean, false | { [1]: number, [2]: SlotWithItem, [3]: SlotWithItem | false, [4]: number}, NotifyProps
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)

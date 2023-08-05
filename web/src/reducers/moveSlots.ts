@@ -38,4 +38,6 @@ export const moveSlotsReducer: CaseReducer<
       : {
           slot: fromSlot.slot,
         };
+  // console.log('sourceInventory', sourceInventory.items[fromSlot.slot - 1]);
+  // console.log('targetInventory', targetInventory.items[toSlot.slot - 1]);
 };

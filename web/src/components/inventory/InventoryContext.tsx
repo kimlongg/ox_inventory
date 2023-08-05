@@ -1,5 +1,6 @@
 import { onUse } from '../../dnd/onUse';
 import { onGive } from '../../dnd/onGive';
+import { onDelete } from '../../dnd/onDelete';
 import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
 import { fetchNui } from '../../utils/fetchNui';
@@ -53,6 +54,9 @@ const InventoryContext: React.FC = () => {
         break;
       case 'give':
         onGive({ name: item.name, slot: item.slot });
+        break;
+      case 'delete':
+        isSlotWithItem(item) && onDelete({ item: item, inventory: 'player' });
         break;
       case 'drop':
         isSlotWithItem(item) && onDrop({ item: item, inventory: 'player' });
@@ -111,6 +115,7 @@ const InventoryContext: React.FC = () => {
       >
         <MenuItem onClick={() => handleClick({ action: 'use' })}>{Locale.ui_use || 'Use'}</MenuItem>
         <MenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</MenuItem>
+        <MenuItem onClick={() => handleClick({ action: 'delete' })}>{Locale.ui_delete || 'Delete'}</MenuItem>
         <MenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</MenuItem>
         {item && item.metadata?.serial && <Divider />}
         {item && item.metadata?.ammo > 0 && (
