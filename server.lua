@@ -94,7 +94,7 @@ end
 
 ---@param source number
 ---@param invType string
----@param data string|number|table
+---@param data? string|number|table
 ---@param ignoreSecurityChecks boolean?
 ---@return boolean|table|nil
 ---@return table?
@@ -105,6 +105,10 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 	local right, closestCoords
 
 	Inventory.CloseAll(left, (invType == 'drop' or invType == 'container' or not invType) and source)
+
+    if invType == 'player' and data == source then
+        data = nil
+    end
 
 	if data then
 		if invType == 'stash' then
@@ -136,7 +140,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				end
 			end
 		elseif invType == 'container' then
-			left.containerSlot = data
+			left.containerSlot = data --[[@as number]]
 			data = left.items[data]
 
 			if data then
@@ -161,6 +165,8 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		if invType == 'container' then hookPayload.slot = left.containerSlot end
 
 		if not TriggerEventHooks('openInventory', hookPayload) then return end
+
+        if left == right then return end
 
 		if right.player then
 			if right.open then return end
@@ -564,7 +570,7 @@ lib.addCommand('saveinv', {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	Inventory.SaveInventories(args.lock == 'true')
+	Inventory.SaveInventories(args.lock == 'true', false)
 end)
 
 lib.addCommand('viewinv', {

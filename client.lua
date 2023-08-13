@@ -138,7 +138,7 @@ function client.openInventory(inv, data)
 			end
 		end
 	elseif IsNuiFocused() then
-		-- If triggering event from another nui such as qtarget, may need to wait for focus to end
+		-- If triggering from another nui, may need to wait for focus to end.
 		Wait(100)
 
         -- People still complain about this being an "error" and ask "how fix" despite being a warning
@@ -155,7 +155,7 @@ function client.openInventory(inv, data)
 	if canOpenInventory() then
 		local left, right
 
-		if inv == 'player' then
+		if inv == 'player' and data ~= cache.serverId then
 			local targetId, targetPed
 
 			if not data then
@@ -201,8 +201,8 @@ function client.openInventory(inv, data)
 					coords = GetEntityCoords(cache.ped)
 					distance = 2
 				else
-					coords = shared.target == 'ox_target' and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
-					distance = coords and shared.target == 'ox_target' and right.zones[data.index].distance or 2
+					coords = shared.target and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
+					distance = coords and shared.target and right.zones[data.index].distance or 2
 				end
 
 				right = {
@@ -218,19 +218,15 @@ function client.openInventory(inv, data)
 			end
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')}) --[[@as any]]
+                if not data then
+                    local input = lib.inputDialog(locale('police_evidence'), {
+                        { label = locale('locker_number'), type = 'number', required = true, icon = 'calculator' }
+                    }) --[[@as number[]? ]]
 
-				if input then
-					input = tonumber(input[1])
-				else
-					return lib.notify({ description = locale('locker_no_value'), type = 'error' })
-				end
+                    if not input then return end
 
-				if type(input) ~= 'number' then
-					return lib.notify({ description = locale('locker_must_number'), type = 'error' })
-				else
-					data = input
-				end
+                    data = input[1]
+                end
 			end
 
 			left, right = lib.callback.await('ox_inventory:openInventory', false, inv, data)
@@ -641,7 +637,6 @@ exports('openNearbyInventory', openNearbyInventory)
 
 local currentInstance
 local playerCoords
-local table = lib.table
 local Inventory = require 'modules.inventory.client'
 local Shops = require 'modules.shops.client'
 
